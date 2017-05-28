@@ -13,7 +13,8 @@ except ImportError:
 
 import numpy as np
 import PIL.Image
-import scipy.misc
+#import scipy.misc
+import cv2
 
 from . import is_url, HTTP_TIMEOUT, errors
 
@@ -204,12 +205,13 @@ def resize_image(image, height, width,
         return image
 
     ### Resize
-    interp = 'bilinear'
+    # interp = 'bilinear'
 
     width_ratio = float(image.shape[1]) / width
     height_ratio = float(image.shape[0]) / height
     if resize_mode == 'squash' or width_ratio == height_ratio:
-        return scipy.misc.imresize(image, (height, width), interp=interp)
+        # return scipy.misc.imresize(image, (height, width), interp=interp)
+        return cv2.resize(image, (height,width))
     elif resize_mode == 'crop':
         # resize to smallest of ratios (relatively larger image), keeping aspect ratio
         if width_ratio > height_ratio:
@@ -218,7 +220,8 @@ def resize_image(image, height, width,
         else:
             resize_width = width
             resize_height = int(round(image.shape[0] / width_ratio))
-        image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+        # image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+        image = cv2.resize(image, (resize_height,resize_width))
 
         # chop off ends of dimension that is still too long
         if width_ratio > height_ratio:
@@ -240,7 +243,8 @@ def resize_image(image, height, width,
                 resize_width = int(round(image.shape[1] / height_ratio))
                 if (width - resize_width) % 2 == 1:
                     resize_width += 1
-            image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+            # image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+            image = cv2.resize(image, (resize_height,resize_width))
         elif resize_mode == 'half_crop':
             # resize to average ratio keeping aspect ratio
             new_ratio = (width_ratio + height_ratio) / 2.0
@@ -250,7 +254,8 @@ def resize_image(image, height, width,
                 resize_height += 1
             elif width_ratio < height_ratio and (width - resize_width) % 2 == 1:
                 resize_width += 1
-            image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+            # image = scipy.misc.imresize(image, (resize_height, resize_width), interp=interp)
+            image = cv2.resize(image, (resize_height,resize_width))
             # chop off ends of dimension that is still too long
             if width_ratio > height_ratio:
                 start = int(round((resize_width-width)/2.0))

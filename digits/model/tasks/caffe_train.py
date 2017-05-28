@@ -14,7 +14,8 @@ import time
 from google.protobuf import text_format
 import numpy as np
 import platform
-import scipy
+# import scipy
+import cv2
 
 from .train import TrainTask
 import digits
@@ -261,10 +262,12 @@ class CaffeTrainTask(TrainTask):
                 # other than 3 or 4.  If it's 1, imresize expects an
                 # array.
                 if (len(shape) == 2 or (len(shape) == 3 and (shape[2] == 3 or shape[2] == 4))):
-                    mean_image = scipy.misc.imresize(mean_image, (data_shape[2], data_shape[3]))
+                    # mean_image = scipy.misc.imresize(mean_image, (data_shape[2], data_shape[3]))
+                    mean_image = cv2.resize(mean_image, (data_shape[2],data_shape[3]))
                 else:
-                    mean_image = scipy.misc.imresize(mean_image[:,:,0],
-                                                     (data_shape[2], data_shape[3]))
+                    # mean_image = scipy.misc.imresize(mean_image[:,:,0],
+                    #                                 (data_shape[2], data_shape[3]))
+                    mean_image = cv2.resize(mean_image[:,:,0], (data_shape[2], data_shape[3]))
                     mean_image = np.expand_dims(mean_image, axis=2)
                 mean_image = mean_image.transpose(2,0,1)
                 mean_image = mean_image.astype('float')
